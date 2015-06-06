@@ -33,11 +33,20 @@ member([H|_],H,0) :- !.
 member([H|T],K,I) :- K \= T, member(T,K,M), I is M+1.
 
 % update(L,C,X,R).
-update([_|T], 0, X, [X|T]).
-update([H|T], I, X, [H|R]):- I > -1, NI is I-1, update(T, NI, X, R), !.
-update(L, _, _, L).
+update_i([_|T], 0, X, [X|T]).
+update_i([H|T], I, X, [H|R]):- I > -1, NI is I-1, update_i(T, NI, X, R), !.
+update_i(L, _, _, L).
+
+update_e([O|T], O, X, [X|T]) :- !.
+update_e([H|T], O, X, [H|R]):- H \= O, H \= X, update_e(T, O, X, R), !.
+update_e(L, _, _, L).
 
 %% This predicate will remove the empty stacks of the list of stacks.
 clean_list([],[]).
 clean_list([[]|T],L) :- !, clean_list(T,L).
 clean_list([H|T],[H|T2]) :- H \= [], clean_list(T,T2).
+
+%% This predicate will remove the empty stacks of the list of stacks.
+remove_zero([],[]).
+remove_zero([[_|[0]]|T],L) :- !, remove_zero(T,L).
+remove_zero([[H|Tt]|T],[[H|Tt]|T2]) :- Tt \= [0], remove_zero(T,T2).
