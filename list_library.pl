@@ -1,34 +1,38 @@
 use_module(stock_exchange).
 
 %in_liste([],_) :- !,fail.
-in_liste([T|Q],T) :- !. % Red cut. Change la sémantique de la règle.
-in_liste([T|Q],X) :- in_liste(Q,X),!.
+in_liste([H|T],H) :- !. % Red cut. Change la sémantique de la règle.
+in_liste([H|T],X) :- in_liste(T,X),!.
 
 
-concat([T|Q],B,[T|Q2]) :- concat(Q,B,Q2).
+concat([H|T],B,[H|T2]) :- concat(T,B,T2).
 concat([],B,B).
 
-length([],0).
-length([T|Q],L) :- length(Q,SL), L is SL + 1.
+length_u([],0).
+length_u([H|T],L) :- length(T,SL), L is SL + 1.
 
 element([],I,'Index out of bounds').
-element([T|Q],0,T) :- !.
-element([T|Q],I,X) :- I \= 0, SI is I - 1, element(Q,SI,X).
+element([H|T],0,H) :- !.
+element([H|T],I,X) :- I \= 0, SI is I - 1, element(T,SI,X).
 
-display([]).
-display([T|Q]) :- write(T), display(Q).
+display_L([]).
+display_L([H|T]) :- write(H), display(T).
 
 pop([],[]) :- !, fail.
-pop([T|Q],Q) :- write(T).
+pop([H|T],T) :- write(H).
 
 push(X,L,[X|L]).
 
 in(K,K).
-in([K|Q],K) :- !.
-in([[K|Q]|_],K) :- !.
-in([[_|Q]|_],K) :- in(Q,K).
-in([_|Q],K) :- in(Q,K).
+in([K|_],K) :- !.
+in([[K|_]|_],K) :- !.
+in([[H|T]|_],K) :- H \= K, in(T,K).
+in([H|T],K,C) :- H \= K, in(T,K,C).
 
-% update(L,K,X,R).
-update([],K,X,[]).
-update([T|Q],K,X,[]).
+member([H|_],H,0) :- !.
+member([H|T],K,I) :- K \= T, member(T,K,M), I is M+1.
+
+% update(L,C,X,R).
+update([_|T], 0, X, [X|T]).
+update([H|T], I, X, [H|R]):- I > -1, NI is I-1, update(T, NI, X, R), !.
+update(L, _, _, L).
