@@ -36,3 +36,8 @@ member([H|T],K,I) :- K \= T, member(T,K,M), I is M+1.
 update([_|T], 0, X, [X|T]).
 update([H|T], I, X, [H|R]):- I > -1, NI is I-1, update(T, NI, X, R), !.
 update(L, _, _, L).
+
+%% This predicate will remove the empty stacks of the list of stacks.
+clean_list([],[]).
+clean_list([[]|T],L) :- !, clean_list(T,L).
+clean_list([H|T],[H|T2]) :- H \= [], clean_list(T,T2).
