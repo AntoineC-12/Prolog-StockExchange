@@ -13,12 +13,41 @@ myVar(stocks,[[wheat,6],[corn,6],[rice,6],[sugar,6],[coffee,6],[cocoa,6]]).
 starting_state(State,NameJ1,NameJ2) :-
 		generating_stacks([[wheat,6],[corn,6],[rice,6],[sugar,6],[coffee,6],[cocoa,6]],Stacks,9),
 		Bourse = [[wheat,7],[corn,6],[rice,6],[sugar,6],[coffee,6],[cocoa,6]],
-		random(1,9,TP),
-		State = [Stacks,Bourse,TP,[NameJ1],[NameJ2]].
+		random(0,8,TP),
+		State = [Stacks,Bourse,TP,[NameJ1,[]],[NameJ2,[]]].
 
 
-%play([Stacks,S,TP,RJ1,RJ2],[Player,Pos,Keep,Sell],NewState) :-  
-%		ISup is mod
+%% This predicate will calculate the indexes of Trader after a move as well as the indexes of the position before and after. 
+%% The result is returned in Res.
+get_indexes(Stacks,CP,Pos,Res) :-
+		length(Stacks,Length), 
+		TempTp is CP + Pos,
+		NTP is mod(TempTp,Length),
+		TempISup is NTP+1, ISup is mod(TempISup,Length),
+		TempIInf is NTP-1, IInf is mod(TempIInf,Length),
+		Res = [NTP,ISup,IInf].
+
+%% This rule will add the product the player decided to keep in their own stock
+add_to_player(Player,Keep,[Player|T],[Player2|T2],NRJ1,NRJ2) :- Player2 \= Player, !,
+		concat([Keep],T,NT), NRJ1 = [Player|NT], NRJ2 = [Player2|T2].
+add_to_player(Player,Keep,[Player1|T1],[Player|T],NRJ1,NRJ2) :- Player1 \= Player, !,
+		concat([Keep],T,NT), NRJ2 = [Player|NT], NRJ1 = [Player1|T1].
+
+
+%% This predicate will update the game state according to the move provided to the function.
+play([Stacks,S,TP,RJ1,RJ2],[Player,Pos,Keep,Sell],NewState) :- 
+		get_indexes(Stacks,TP,Pos,Res),
+		[NTP,ISup,IInf] = Res,
+		nth0(ISup,Stacks,E1),
+		nth0(IInf,Stacks,E2),
+		pop(E1,NE1), pop(E2,NE2),
+		update_i(Stacks,ISup,NE1,NTempStacks), update_i(NTempStacks,IInf,NE2,NStacks),
+		clean_list_and_update_TP(NStacks,NewStacks,NTP,NTPmod), 
+		length(NewStacks,Length), NewTP is mod(NTPmod,Length), 
+		add_to_player(Player,Keep,RJ1,RJ2,NRJ1,NRJ2),
+		member_sec_order_e(S,Sell,Elt), [Name,Value] = Elt, NValue is Value - 1,
+		NElt = [Name,NValue], update_e(S,Elt,NElt,NS), 
+		NewState = [NewStacks,NS,NewTP,NRJ1,NRJ2].
 
 
 %% The choose rule will pseudo-randomly choose an element of a list given in the predicate parameters.

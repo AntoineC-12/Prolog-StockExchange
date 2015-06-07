@@ -7,8 +7,8 @@ print_u(X) :- write(X).
 
 %% This predicate will display the stacks of merchandise.
 display_stack([],_).
-display_stack([[H|T]|Tt],1) :- tab(1), write('-->'), tab(1), print_u([H|T]), nl, !, display_stack(Tt,0).
-display_stack([[H|T]|Tt],P) :- P \= 1, Psub is P - 1, tab(5), print_u([H|T]), nl, display_stack(Tt,Psub).
+display_stack([[H|T]|Tt],0) :- tab(1), write('-->'), tab(1), print_u([H|T]), nl, !, display_stack(Tt,-1).
+display_stack([[H|T]|Tt],P) :- P \= 0, Psub is P - 1, tab(5), print_u([H|T]), nl, display_stack(Tt,Psub).
 
 %% This rule gets the template associated with the name given in argument.
 get_objTemplate(_,[],[]) :- !.
