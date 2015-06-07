@@ -7,15 +7,21 @@ use_module(stock_exchange).
 myVar(board,[['wheat ',7,6,5,4,3,2,1],['corn  ',6,5,4,3,2,1,0],['rice  ',6,5,4,3,2,1,0],['sugar ',6,5,4,3,2,1,0],['coffee',6,5,4,3,2,1,0],['cocoa ',6,5,4,3,2,1,0]]).
 myVar(stocks,[[wheat,6],[corn,6],[rice,6],[sugar,6],[coffee,6],[cocoa,6]]).
 
+% A game state will define as State = [Marchandises, Bourse, PositionTrader, ReserveJoueur1,ReserveJoueur2].
+
+
+starting_state(State).
+
+
+%% The choose rule will pseudo-randomly choose an element of a list given in the predicate parameters.
 choose([], []).
 choose(List, Elt) :-
         length(List, Length),
         random(0, Length, Index),
         nth0(Index, List, Elt).
+        
 
-
-starting_state(State).
-
+%% This predicate is used to generate the list of stacks during the game initialisation process.
 generating_stacks(_,[],0) :- !.
 generating_stacks(S,Stacks,Nb) :- Nb > 0,
 		generating_a_stack(S,Stack,4,SAfter),
