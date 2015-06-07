@@ -17,6 +17,10 @@ starting_state(State,NameJ1,NameJ2) :-
 		State = [Stacks,Bourse,TP,[NameJ1],[NameJ2]].
 
 
+%play([Stacks,S,TP,RJ1,RJ2],[Player,Pos,Keep,Sell],NewState) :-  
+%		ISup is mod
+
+
 %% The choose rule will pseudo-randomly choose an element of a list given in the predicate parameters.
 choose([], []).
 choose(List, Elt) :-
