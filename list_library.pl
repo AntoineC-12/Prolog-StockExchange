@@ -18,16 +18,14 @@ element([H|T],I,X) :- I \= 0, SI is I - 1, element(T,SI,X).
 display_L([]).
 display_L([H|T]) :- write(H), display(T).
 
+
+%% This predicate pops the first element of the list.
 pop([],[]) :- !, fail.
 pop([H|T],T) :- write(H).
 
-push(X,L,[X|L]).
 
-in(K,K).
-in([K|_],K) :- !.
-in([[K|_]|_],K) :- !.
-in([[H|T]|_],K) :- H \= K, in(T,K).
-in([H|T],K,C) :- H \= K, in(T,K,C).
+
+push(X,L,[X|L]).
 
 member([H|_],H,0) :- !.
 member([H|T],K,I) :- K \= T, member(T,K,M), I is M+1.

@@ -1,4 +1,4 @@
-% This is the initilisation file of the StockExchange Game
+% This is the file containing the engine of the StockExchange Game
 % Author: Antoine Pouillaude.
 
 use_module(stock_exchange).
@@ -9,7 +9,7 @@ myVar(stocks,[[wheat,6],[corn,6],[rice,6],[sugar,6],[coffee,6],[cocoa,6]]).
 
 % A game state will define as State = [Marchandises, Bourse, PositionTrader, ReserveJoueur1,ReserveJoueur2].
 
-
+%% This predicate generates the initial state of the game. 
 starting_state(State,NameJ1,NameJ2) :-
 		generating_stacks([[wheat,6],[corn,6],[rice,6],[sugar,6],[coffee,6],[cocoa,6]],Stacks,9),
 		Bourse = [[wheat,7],[corn,6],[rice,6],[sugar,6],[coffee,6],[cocoa,6]],
