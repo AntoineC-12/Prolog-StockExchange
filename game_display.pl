@@ -15,11 +15,6 @@ get_objTemplate(_,[],[]) :- !.
 get_objTemplate(Name,[[Name,Temp]|_],Temp) :- !. 
 get_objTemplate(Name,[[H|_]|T],Temp) :- H \= Name, get_objTemplate(Name,T,Temp).
 
-%% This predicate will insert the 'XXX' mark on the right value of the board. This is the same as using update_e(Temp,Value,'XXX',Temp_with_pawn).
-%put_pawn_on_template([],_,[]).
-%put_pawn_on_template([Value|T],Value,['XXX'|Tt]) :- !, put_pawn_on_template(T,Value,Tt).
-%put_pawn_on_template([H|T],Value,[H|Tt]) :- H \= Value, put_pawn_on_template(T,Value,Tt).
-
 %% This function generates the board from the Stock values.
 generate_board_from_stock([],[]).
 generate_board_from_stock([H|T],Board) :-
@@ -60,11 +55,3 @@ display_game(State) :-
 		display_stack(Stacks,TP),
 		nl, nl,
 		display_players([RJ1,RJ2]).
-
-%% This rule serves to print X new lines on the screen.
-print_n_lines(0):-!. 
-print_n_lines(X):- 
-    integer(X), 
-    Y is X - 1, 
-    nl, 
-    print_n_lines(Y).

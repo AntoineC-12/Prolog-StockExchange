@@ -10,7 +10,11 @@ myVar(stocks,[[wheat,6],[corn,6],[rice,6],[sugar,6],[coffee,6],[cocoa,6]]).
 % A game state will define as State = [Marchandises, Bourse, PositionTrader, ReserveJoueur1,ReserveJoueur2].
 
 
-starting_state(State).
+starting_state(State,NameJ1,NameJ2) :-
+		generating_stacks([[wheat,6],[corn,6],[rice,6],[sugar,6],[coffee,6],[cocoa,6]],Stacks,9),
+		Bourse = [[wheat,7],[corn,6],[rice,6],[sugar,6],[coffee,6],[cocoa,6]],
+		random(1,9,TP),
+		State = [Stacks,Bourse,TP,[NameJ1],[NameJ2]].
 
 
 %% The choose rule will pseudo-randomly choose an element of a list given in the predicate parameters.
