@@ -16,6 +16,16 @@ starting_state(State,NameJ1,NameJ2) :-
 		random(0,8,TP),
 		State = [Stacks,Bourse,TP,[NameJ1,[]],[NameJ2,[]]].
 
+%% This predicate will check if a move is possible in the current game configuration.
+is_possible(Stacks,TP,[Player,Pos,Keep,Sell]):- Pos < 4, Pos >0,
+		get_indexes(Stacks,TP,Pos,[NTP,ISup,IInf]),
+		nth0(ISup,Stacks,E1),
+		nth0(IInf,Stacks,E2),
+		test_comb(Keep,Sell,E1,E2).
+
+%% This rule test if the two elements given in the move are on top of the two adjacent stacks of the Trader stack.
+test_comb(Keep,Sell,[Keep|_],[Sell|_]) :- !.
+test_comb(Keep,Sell,[Sell|_],[Keep|_]) :- !.
 
 %% This predicate will calculate the indexes of Trader after a move as well as the indexes of the position before and after. 
 %% The result is returned in Res.
@@ -35,9 +45,8 @@ add_to_player(Player,Keep,[Player1|T1],[Player|T],NRJ1,NRJ2) :- Player1 \= Playe
 
 
 %% This predicate will update the game state according to the move provided to the function.
-play([Stacks,S,TP,RJ1,RJ2],[Player,Pos,Keep,Sell],NewState) :- 
-		get_indexes(Stacks,TP,Pos,Res),
-		[NTP,ISup,IInf] = Res,
+play([Stacks,S,TP,RJ1,RJ2],[Player,Pos,Keep,Sell],NewState) :- is_possible(Stacks,TP,[Player,Pos,Keep,Sell]),
+		get_indexes(Stacks,TP,Pos,[NTP,ISup,IInf]),
 		nth0(ISup,Stacks,E1),
 		nth0(IInf,Stacks,E2),
 		pop(E1,NE1), pop(E2,NE2),

@@ -27,6 +27,7 @@ pop([H|T],T).
 
 push(X,L,[X|L]).
 
+%% This predicate will search for at a specified position in a list and return the element of the list corresponding to that position.
 member([H|_],H,0) :- !.
 member([H|T],K,I) :- K \= H, member(T,K,M), I is M+1.
 
