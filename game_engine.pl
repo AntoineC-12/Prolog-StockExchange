@@ -95,3 +95,19 @@ generating_a_stack(S,Stack,Nb,SAfter) :- Nb > 0,
 		M is Nb -1,
 		generating_a_stack(Ssub_no_zero,St,M,SAfter),
 		concat([H],St,Stack).
+
+evalState(State,Earnings) :- 
+		[Stacks,S,TP,RJ1,RJ2] = State,
+		[Player1|Reserve1] = RJ1,
+		[Player2|Reserve2] = RJ2,
+		eval_player_earning(S,Reserve1,J1Earnings),
+		eval_player_earning(S,Reserve2,J2Earnings),
+		Earn1 = [Player1,J1Earnings],Earn2 = [Player2,J2Earnings],
+		Earnings = [Earn1,Earn2].
+
+
+eval_player_earning(Stock,[],0) :- !.
+eval_player_earning(Stock,[H|T],JEarning) :-
+		eval_player_earning(Stock,T,SJearning),
+		member_sec_order_e(Stock,H,Elt),
+		[Name,Value] = Elt, JEarning is SJearning + Value.

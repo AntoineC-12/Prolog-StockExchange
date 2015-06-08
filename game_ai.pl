@@ -24,3 +24,13 @@ get_possible_list(Stacks,TP,Pos,ListProd) :-
 		nth0(IInf,Stacks,E2),
 		[Prod1|T1] = E1, [Prod2|T2] = E2,
 		ListProd = [Prod1,Prod2].
+
+best_move(State,Player,Move).
+
+
+
+min_max_algorithm().
+
+min().
+
+max().
