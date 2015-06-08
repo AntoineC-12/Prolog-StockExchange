@@ -14,18 +14,20 @@ starting_state(State,NameJ1,NameJ2) :-
 		generating_stacks([[wheat,6],[corn,6],[rice,6],[sugar,6],[coffee,6],[cocoa,6]],Stacks,9),
 		Bourse = [[wheat,7],[corn,6],[rice,6],[sugar,6],[coffee,6],[cocoa,6]],
 		random(0,8,TP),
-		State = [Stacks,Bourse,TP,[NameJ1,[]],[NameJ2,[]]].
+		State = [Stacks,Bourse,TP,[NameJ1],[NameJ2]].
 
 %% This predicate will check if a move is possible in the current game configuration.
-is_possible(Stacks,TP,[Player,Pos,Keep,Sell]):- Pos < 4, Pos >0,
+is_possible(Stacks,TP,[Player,Pos,Keep,Sell],ReturnValue):- Pos < 4, Pos >0, !,
 		get_indexes(Stacks,TP,Pos,[NTP,ISup,IInf]),
 		nth0(ISup,Stacks,E1),
 		nth0(IInf,Stacks,E2),
-		test_comb(Keep,Sell,E1,E2).
+		test_comb(Keep,Sell,E1,E2,ReturnValue).
+is_possible(Stacks,TP,[Player,Pos,Keep,Sell],2).
 
 %% This rule test if the two elements given in the move are on top of the two adjacent stacks of the Trader stack.
-test_comb(Keep,Sell,[Keep|_],[Sell|_]) :- !.
-test_comb(Keep,Sell,[Sell|_],[Keep|_]) :- !.
+test_comb(Keep,Sell,[Keep|_],[Sell|_],0) :- !.
+test_comb(Keep,Sell,[Sell|_],[Keep|_],0) :- !.
+test_comb(Keep,Sell,[H1|_],[H2|_],1).
 
 %% This predicate will calculate the indexes of Trader after a move as well as the indexes of the position before and after. 
 %% The result is returned in Res.
@@ -45,7 +47,9 @@ add_to_player(Player,Keep,[Player1|T1],[Player|T],NRJ1,NRJ2) :- Player1 \= Playe
 
 
 %% This predicate will update the game state according to the move provided to the function.
-play([Stacks,S,TP,RJ1,RJ2],[Player,Pos,Keep,Sell],NewState) :- is_possible(Stacks,TP,[Player,Pos,Keep,Sell]),
+play([Stacks,S,TP,RJ1,RJ2],[Player,Pos,Keep,Sell],NewState,RetValue) :- is_possible(Stacks,TP,[Player,Pos,Keep,Sell],ExitStatus),
+		play([Stacks,S,TP,RJ1,RJ2],[Player,Pos,Keep,Sell],NewState,RetValue,ExitStatus).
+play([Stacks,S,TP,RJ1,RJ2],[Player,Pos,Keep,Sell],NewState,0,0) :- !,
 		get_indexes(Stacks,TP,Pos,[NTP,ISup,IInf]),
 		nth0(ISup,Stacks,E1),
 		nth0(IInf,Stacks,E2),
@@ -57,6 +61,10 @@ play([Stacks,S,TP,RJ1,RJ2],[Player,Pos,Keep,Sell],NewState) :- is_possible(Stack
 		member_sec_order_e(S,Sell,Elt), [Name,Value] = Elt, NValue is Value - 1,
 		NElt = [Name,NValue], update_e(S,Elt,NElt,NS), 
 		NewState = [NewStacks,NS,NewTP,NRJ1,NRJ2].
+
+play([Stacks,S,TP,RJ1,RJ2],[Player,Pos,Keep,Sell],NewState,2,2) :- !,write('Position not possible.'), NewState =[Stacks,S,TP,RJ1,RJ2].
+play([Stacks,S,TP,RJ1,RJ2],[Player,Pos,Keep,Sell],NewState,1,1) :- write('Elements given were not found on top of the adjacent stacks.'),NewState =[Stacks,S,TP,RJ1,RJ2].
+
 
 
 %% The choose rule will pseudo-randomly choose an element of a list given in the predicate parameters.
