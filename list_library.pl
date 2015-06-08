@@ -39,7 +39,7 @@ member_sec_order([[H|_]|T],K,I) :- K \= H, member_sec_order(T,K,M), I is M+1.
 member_sec_order_e([[H|T]|_],H,[H|T]) :- !.
 member_sec_order_e([[H|_]|T],K,Elt) :- K \= H, member_sec_order_e(T,K,Elt).
 
-% update(L,C,X,R).
+%%%% update_i()
 update_i([_|T], 0, X, [X|T]) :- !.
 update_i([H|T], I, X, [H|R]):- I > 0, !, NI is I-1, update_i(T, NI, X, R).
 update_i(L, _, _, L).
