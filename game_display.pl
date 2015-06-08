@@ -6,18 +6,23 @@ use_module(stock_exchange).
 %% This file contains the rules to display the gaming board.
 % A game state will define as State = [Marchandises, Bourse, PositionTrader, ReserveJoueur1,ReserveJoueur2].
 
+%%%% print_u(+The_Element_To_Be_Printed)
+%% This prints the element given in argument.
 print_u(X) :- write(X).
 
-%% This predicate will display the stacks of merchandise.
+%%% display_stack(+List_Of_Stacks,+Position_Of_The_Trader)
+%% This predicate will display the stacks of merchandise. It adds an arrow in from of the stack on which the Trader is seating.
 display_stack([],_).
 display_stack([[H|T]|Tt],0) :- tab(1), write('-->'), tab(1), print_u([H|T]), nl, !, display_stack(Tt,-1).
 display_stack([[H|T]|Tt],P) :- P \= 0, Psub is P - 1, tab(5), print_u([H|T]), nl, display_stack(Tt,Psub).
 
-%% This rule gets the template associated with the name given in argument.
+%%%% get_objTemplate(+Name_Of_The_Template_To_Get,+List_Of_Templates,?Template_Associated_With_The_Name).
+%% This rule gets the template associated with the name given in argument. This predicate is similar to member_sec_order_e.
 get_objTemplate(_,[],[]) :- !.
 get_objTemplate(Name,[[Name,Temp]|_],Temp) :- !. 
 get_objTemplate(Name,[[H|_]|T],Temp) :- H \= Name, get_objTemplate(Name,T,Temp).
 
+%%%% generate_board_from_stock(+Stocks_Values,-List_Representing_The_Board)
 %% This function generates the board from the Stock values.
 generate_board_from_stock([],[]).
 generate_board_from_stock([H|T],Board) :-
@@ -28,15 +33,18 @@ generate_board_from_stock([H|T],Board) :-
 	generate_board_from_stock(T,NB),
 	concat([Temp_with_pawn],NB,Board).
 
+%%%% display_line(+Line_Of_The_Board_To_Be_Displayed)
 %% The following predicate displays a line of the Board.
 display_line([]).
 display_line(['XXX'|T]) :- tab(1), print('XXX'), tab(1), write('|'), !, display_line(T).
 display_line([H|T]) :- H \= 'XXX', tab(2),print(H), tab(2), write('|'),display_line(T).
 
+%%%% display_board(+Board_To_Be_Displayed).
 %% This predictate print the Chicago Stock Exchange board on the screen.
 display_board([]).
 display_board([H|T]) :- tab(5), display_line(H),nl,display_board(T).
 
+%%%% display_players(+List_Of_Players_To_Be_Displayed)
 %% This rule will display the players stocks.
 display_players([]).
 display_players([[Name|T]|Tt]) :- 
@@ -47,7 +55,7 @@ display_players([[Name|T]|Tt]) :-
 		tab(10),
 		display_players(Tt).
 
-
+%%%% display_game(+Game_State_To_Be_Displayed)
 %% The following predicate displays a game state.
 display_game(State) :-
 		write('\33\[2J'),
