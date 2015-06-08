@@ -1,3 +1,6 @@
+% This is the file containing the displqy rules of the StockExchange Game
+% Author: Antoine Pouillaude.
+
 use_module(stock_exchange).
 
 %% This file contains the rules to display the gaming board.
