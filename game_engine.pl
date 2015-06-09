@@ -36,10 +36,15 @@ test_comb(Keep,Sell,[H1|_],[H2|_],1).
 get_indexes(Stacks,CP,Pos,Res) :-
 		length(Stacks,Length), 
 		TempTp is CP + Pos,
-		NTP is mod(TempTp,Length),
-		TempISup is NTP+1, ISup is mod(TempISup,Length),
-		TempIInf is NTP-1, IInf is mod(TempIInf,Length),
+		my_mod(TempTp,Length,NTP),
+		TempISup is NTP+1, my_mod(TempISup,Length,ISup),
+		TempIInf is NTP-1, my_mod(TempIInf,Length,IInf),
 		Res = [NTP,ISup,IInf].
+
+%%%% my_mod(+Number_To_Be_Mod,+Modulo,?Result)
+%% I use this to avoid the zero division exception when the stack is empty.
+my_mod(_,0,0) :-!.
+my_mod(Nb,Mod,Res) :- Mod \=0, Res is mod(Nb,Mod).
 
 %%%% add_to_player(+Name_Of_The_Player_To_Whom_To_Add_The_Product,+Product_To_Add,+Reserve_Of_Player1,+Reserve_Of_Player2,?New_Reserve_Of_Player1,?New_Reserve_Of_Player2)
 %% This rule will add the product the player decided to keep in their own stock
@@ -61,7 +66,7 @@ play_ret([Stacks,S,TP,RJ1,RJ2],[Player,Pos,Keep,Sell],NewState,0,0) :- !,
 		pop(E1,NE1), pop(E2,NE2),
 		update_i(Stacks,ISup,NE1,NTempStacks), update_i(NTempStacks,IInf,NE2,NStacks),
 		clean_list_and_update_TP(NStacks,NewStacks,NTP,NTPmod), 
-		length(NewStacks,Length), NewTP is mod(NTPmod,Length), 
+		length(NewStacks,Length), my_mod(NTPmod,Length,NewTP), 
 		add_to_player(Player,Keep,RJ1,RJ2,NRJ1,NRJ2),
 		member_sec_order_e(S,Sell,Elt), [Name,Value] = Elt, NValue is Value - 1,
 		NElt = [Name,NValue], update_e(S,Elt,NElt,NS), 
@@ -121,3 +126,12 @@ eval_player_earning(Stock,[H|T],JEarning) :-
 		eval_player_earning(Stock,T,SJearning),
 		member_sec_order_e(Stock,H,Elt),
 		[Name,Value] = Elt, JEarning is SJearning + Value.
+
+
+
+ai_vs_ai([[],S,TP,RJ1,RJ2],_) :- !,display_game([[],S,TP,RJ1,RJ2]), nl, write('The Game is Over'), evalState([[],S,TP,RJ1,RJ2],Earnings),write(Earnings).
+ai_vs_ai([Stacks,S,TP,RJ1,RJ2],Player) :- Stacks \= [], State = [Stacks,S,TP,RJ1,RJ2], 
+		display_game(State),best_move(State,2,Player,BestMove),
+		play(State,BestMove,NewState,_),
+		opponent(State,Player,Opponent),
+		ai_vs_ai(NewState,Opponent).

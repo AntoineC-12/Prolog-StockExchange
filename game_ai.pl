@@ -32,7 +32,7 @@ get_possible_list(Stacks,TP,Pos,ListProd) :-
 
 %%%% best_move(+GameState,+Depth_The_Search,+Player_Who_Is_Playing,?Best_Move)
 %% This predicate will use Minimax Alpha/Beta algorithm to search for the best solution possible to play. 
-%% WARNING: We got a stack-overflow for Depth higher or equal to 5.
+%% WARNING: We got a stack-overflow for Depth higher or equal to 5 when using it in standalone. It cannot deeper than 2 in game configurations.
 best_move(State,D,Player,BestMove) :- 
 		all_possible_moves(State,Player,PossibleMoves), 
 		best_move_Loop(State,PossibleMoves,D,Player,Val,BestMove).

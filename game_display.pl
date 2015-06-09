@@ -58,7 +58,7 @@ display_players([[Name|T]|Tt]) :-
 %%%% display_game(+Game_State_To_Be_Displayed)
 %% The following predicate displays a game state.
 display_game(State) :-
-		write('\33\[2J'),
+		put(27),write('[2J'),
 		[Stacks,S,TP,RJ1,RJ2] = State,
 		generate_board_from_stock(S,Board),
 		display_board(Board),
