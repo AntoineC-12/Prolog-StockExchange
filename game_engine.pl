@@ -51,10 +51,10 @@ add_to_player(Player,Keep,[Player1|T1],[Player|T],NRJ1,NRJ2) :- Player1 \= Playe
 %%%% play(+Game_State,+Move_To_Apply,?New_State,-Return_Value)
 %% This predicate will update the game state according to the move provided to the function.
 play([Stacks,S,TP,RJ1,RJ2],[Player,Pos,Keep,Sell],NewState,RetValue) :- is_possible(Stacks,TP,[Player,Pos,Keep,Sell],ExitStatus),
-		play([Stacks,S,TP,RJ1,RJ2],[Player,Pos,Keep,Sell],NewState,RetValue,ExitStatus).
+		play_ret([Stacks,S,TP,RJ1,RJ2],[Player,Pos,Keep,Sell],NewState,RetValue,ExitStatus).
 
-%%%% play(+Game_State,+Move_To_Apply,?New_State,-Return_Value,+Value_Returned_By_The_is_possible_Predicate)
-play([Stacks,S,TP,RJ1,RJ2],[Player,Pos,Keep,Sell],NewState,0,0) :- !,
+%%%% play_ret(+Game_State,+Move_To_Apply,?New_State,-Return_Value,+Value_Returned_By_The_is_possible_Predicate)
+play_ret([Stacks,S,TP,RJ1,RJ2],[Player,Pos,Keep,Sell],NewState,0,0) :- !,
 		get_indexes(Stacks,TP,Pos,[NTP,ISup,IInf]),
 		nth0(ISup,Stacks,E1),
 		nth0(IInf,Stacks,E2),
@@ -66,8 +66,8 @@ play([Stacks,S,TP,RJ1,RJ2],[Player,Pos,Keep,Sell],NewState,0,0) :- !,
 		member_sec_order_e(S,Sell,Elt), [Name,Value] = Elt, NValue is Value - 1,
 		NElt = [Name,NValue], update_e(S,Elt,NElt,NS), 
 		NewState = [NewStacks,NS,NewTP,NRJ1,NRJ2].
-play([Stacks,S,TP,RJ1,RJ2],[Player,Pos,Keep,Sell],NewState,2,2) :- !,write('Position not possible.'), NewState =[Stacks,S,TP,RJ1,RJ2].
-play([Stacks,S,TP,RJ1,RJ2],[Player,Pos,Keep,Sell],NewState,1,1) :- write('Elements given were not found on top of the adjacent stacks.'),NewState =[Stacks,S,TP,RJ1,RJ2].
+play_ret([Stacks,S,TP,RJ1,RJ2],[Player,Pos,Keep,Sell],NewState,2,2) :- !,write('Position not possible.'), NewState =[Stacks,S,TP,RJ1,RJ2].
+play_ret([Stacks,S,TP,RJ1,RJ2],[Player,Pos,Keep,Sell],NewState,1,1) :- write('Elements given were not found on top of the adjacent stacks.'),NewState =[Stacks,S,TP,RJ1,RJ2].
 
 
 %%%% choose(+List_Of_Element_From_Which_To_Pick,?Picked_Element)
