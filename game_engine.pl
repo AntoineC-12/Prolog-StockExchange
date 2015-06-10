@@ -2,11 +2,17 @@
 % Author: Antoine Pouillaude.
 
 use_module(stock_exchange).
-:- include(game_ai).
-:- include(game_display).
-:- include(list_library).
+%:- include(game_ai).
+%:- include(game_display).
+%:- include(list_library).
 
 % A game state will define as State = [Marchandises, Bourse, PositionTrader, ReserveJoueur1,ReserveJoueur2].
+
+%%%% error_message(+Value_Returned_By_A_Predicate)
+%% This rule takes the value returned by a predicate and print the right error_message on the screen.
+error_message(1) :- write('Elements given were not found on top of the adjacent stacks.').
+error_message(2) :- write('Position not possible.').
+error_message(3) :- write('The game is over. No move possible').
 
 %%%% starting_state(?State_To_Be_Generated,+Player_1's_Name,+Player_1's_Name)
 %% This predicate generates the initial state of the game. 
@@ -58,7 +64,8 @@ add_to_player(Player,Keep,[Player1|T1],[Player|T],NRJ1,NRJ2) :- Player1 \= Playe
 
 %%%% play(+Game_State,+Move_To_Apply,?New_State,-Return_Value)
 %% This predicate will update the game state according to the move provided to the function.
-play([Stacks,S,TP,RJ1,RJ2],[Player,Pos,Keep,Sell],NewState,RetValue) :- is_possible(Stacks,TP,[Player,Pos,Keep,Sell],ExitStatus),
+play([Stacks,S,TP,RJ1,RJ2],[Player,Pos,Keep,Sell],NewState,3) :- length(Stacks,Le),Le =< 2, !.
+play([Stacks,S,TP,RJ1,RJ2],[Player,Pos,Keep,Sell],NewState,RetValue) :- length(Stacks,Le),Le > 2,is_possible(Stacks,TP,[Player,Pos,Keep,Sell],ExitStatus),
 		play_ret([Stacks,S,TP,RJ1,RJ2],[Player,Pos,Keep,Sell],NewState,RetValue,ExitStatus).
 
 %%%% play_ret(+Game_State,+Move_To_Apply,?New_State,-Return_Value,+Value_Returned_By_The_is_possible_Predicate)
@@ -74,8 +81,7 @@ play_ret([Stacks,S,TP,RJ1,RJ2],[Player,Pos,Keep,Sell],NewState,0,0) :- !,
 		member_sec_order_e(S,Sell,Elt), [Name,Value] = Elt, NValue is Value - 1,
 		NElt = [Name,NValue], update_e(S,Elt,NElt,NS), 
 		NewState = [NewStacks,NS,NewTP,NRJ1,NRJ2].
-play_ret([Stacks,S,TP,RJ1,RJ2],[Player,Pos,Keep,Sell],NewState,2,2) :- !,write('Position not possible.'), NewState =[Stacks,S,TP,RJ1,RJ2].
-play_ret([Stacks,S,TP,RJ1,RJ2],[Player,Pos,Keep,Sell],NewState,1,1) :- write('Elements given were not found on top of the adjacent stacks.'),NewState =[Stacks,S,TP,RJ1,RJ2].
+play_ret([Stacks,S,TP,RJ1,RJ2],[Player,Pos,Keep,Sell],NewState,ExitStatus,ExitStatus) :- NewState =[Stacks,S,TP,RJ1,RJ2].
 
 
 %%%% choose(+List_Of_Element_From_Which_To_Pick,?Picked_Element)
@@ -133,9 +139,22 @@ eval_player_earning(Stock,[H|T],JEarning) :-
 
 %%%% ai_vs_ai(+GameState,+Player_Who_Will_Make_The_Move).
 %% This rule is the ai_vs_ai part of the game.
-ai_vs_ai([Stacks,S,TP,RJ1,RJ2],_) :- length(Stacks,Le),Le=<2,!,display_game([Stacks,S,TP,RJ1,RJ2]), nl, write('The Game is Over'), evalState([[],S,TP,RJ1,RJ2],Earnings),write(Earnings).
+ai_vs_ai([Stacks,S,TP,RJ1,RJ2],_) :- length(Stacks,Le),Le=<2,!,
+		display_game([Stacks,S,TP,RJ1,RJ2]),nl,nl,tab(20),write('The Game is Over'),nl,
+		tab(20),evalState([[],S,TP,RJ1,RJ2],Earnings),display_earnings(Earnings),nl,nl.
 ai_vs_ai([Stacks,S,TP,RJ1,RJ2],Player) :- length(Stacks,Le),Le>2, State = [Stacks,S,TP,RJ1,RJ2], 
-		display_game(State),write([Stacks,S,TP,RJ1,RJ2]),nl,best_move(State,5,Player,BestMove),
+		display_game(State),best_move(State,5,Player,BestMove),
+		play(State,BestMove,NewState,_),
+		opponent(State,Player,Opponent),
+		ai_vs_ai(NewState,Opponent).
+
+%%%% ai_vs_ai(+GameState,+Player_Who_Will_Make_The_Move).
+%% This rule is the ai_vs_ai part of the game.
+ai_vs_ai([Stacks,S,TP,RJ1,RJ2],_) :- length(Stacks,Le),Le=<2,!,
+		display_game([Stacks,S,TP,RJ1,RJ2]),nl,nl,tab(20),write('The Game is Over'),nl,
+		tab(20),evalState([[],S,TP,RJ1,RJ2],Earnings),display_earnings(Earnings),nl,nl.
+ai_vs_ai([Stacks,S,TP,RJ1,RJ2],Player) :- length(Stacks,Le),Le>2, State = [Stacks,S,TP,RJ1,RJ2], 
+		display_game(State),best_move(State,5,Player,BestMove),
 		play(State,BestMove,NewState,_),
 		opponent(State,Player,Opponent),
 		ai_vs_ai(NewState,Opponent).

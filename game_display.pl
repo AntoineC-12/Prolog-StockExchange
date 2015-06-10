@@ -2,7 +2,7 @@
 % Author: Antoine Pouillaude.
 
 use_module(stock_exchange).
-:- include(list_library).
+%:- include(list_library).
 
 %% This file contains the rules to display the gaming board.
 % A game state will define as State = [Marchandises, Bourse, PositionTrader, ReserveJoueur1,ReserveJoueur2].
@@ -59,11 +59,18 @@ display_players([[Name|T]|Tt]) :-
 %%%% display_game(+Game_State_To_Be_Displayed)
 %% The following predicate displays a game state.
 display_game(State) :-
-		put(27),write('[2J'),
 		[Stacks,S,TP,RJ1,RJ2] = State,
 		generate_board_from_stock(S,Board),
 		display_board(Board),
 		nl, nl, nl,
 		display_stack(Stacks,TP),
 		nl, nl,
-		display_players([RJ1,RJ2]).
+		display_players([RJ1,RJ2]),nl,nl,nl.
+
+%%%% display_earnings(+PlayersEarnings_To_Be_Displayed)
+%% This predicate displays the players' earning in a readable way.
+display_earnings([]) :-!.
+display_earnings([H|T]) :-
+		[Name,PlayerEarnings] = H,
+		write(Name),write(' earned '),write(PlayerEarnings),write('USD.   '),
+		display_earnings(T).

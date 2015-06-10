@@ -1,7 +1,7 @@
 % This is the file containing the AI of the StockExchange Game
 % Author: Antoine Pouillaude.
 use_module(stock_exchange).
-:- include(list_library).
+%:- include(list_library).
 
 %%%% all_possible_moves(+State_Of_The_Game,+Player_Who_Will_Make_The_Move,?Possible_Moves)
 %% The following predicate will get all the possible moves that the ai could make.
