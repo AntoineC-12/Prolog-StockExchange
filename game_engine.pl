@@ -131,7 +131,8 @@ eval_player_earning(Stock,[H|T],JEarning) :-
 		[Name,Value] = Elt, JEarning is SJearning + Value.
 
 
-
+%%%% ai_vs_ai(+GameState,+Player_Who_Will_Make_The_Move).
+%% This rule is the ai_vs_ai part of the game.
 ai_vs_ai([Stacks,S,TP,RJ1,RJ2],_) :- length(Stacks,Le),Le=<2,!,display_game([Stacks,S,TP,RJ1,RJ2]), nl, write('The Game is Over'), evalState([[],S,TP,RJ1,RJ2],Earnings),write(Earnings).
 ai_vs_ai([Stacks,S,TP,RJ1,RJ2],Player) :- length(Stacks,Le),Le>2, State = [Stacks,S,TP,RJ1,RJ2], 
 		display_game(State),write([Stacks,S,TP,RJ1,RJ2]),nl,best_move(State,5,Player,BestMove),
