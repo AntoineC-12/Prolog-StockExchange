@@ -1,19 +1,19 @@
-use_module(stock_exchange).
+
 
 %in_liste([],_) :- !,fail.
-in_liste([H|T],H) :- !. % Red cut. Change la sémantique de la règle.
-in_liste([H|T],X) :- in_liste(T,X),!.
+in_liste([H|_],H) :- !. % Red cut. Change la sémantique de la règle.
+in_liste([_|T],X) :- in_liste(T,X),!.
 
 
 concat([H|T],B,[H|T2]) :- concat(T,B,T2).
 concat([],B,B).
 
 length_u([],0).
-length_u([H|T],L) :- length(T,SL), L is SL + 1.
+length_u([_|T],L) :- length(T,SL), L is SL + 1.
 
-element([],I,'Index out of bounds').
-element([H|T],0,H) :- !.
-element([H|T],I,X) :- I \= 0, SI is I - 1, element(T,SI,X).
+element([],_,'Index out of bounds').
+element([H|_],0,H) :- !.
+element([_|T],I,X) :- I \= 0, SI is I - 1, element(T,SI,X).
 
 display_L([]).
 display_L([H|T]) :- write(H), display(T).
@@ -21,7 +21,7 @@ display_L([H|T]) :- write(H), display(T).
 
 %% This predicate pops the first element of the list.
 pop([],[]) :- !, fail.
-pop([H|T],T).
+pop([_|T],T).
 
 
 

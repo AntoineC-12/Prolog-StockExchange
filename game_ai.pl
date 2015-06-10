@@ -1,16 +1,16 @@
 % This is the file containing the AI of the StockExchange Game
 % Author: Antoine Pouillaude.
-use_module(stock_exchange).
+
 %:- include(list_library).
 
 %%%% all_possible_moves(+State_Of_The_Game,+Player_Who_Will_Make_The_Move,?Possible_Moves)
 %% The following predicate will get all the possible moves that the ai could make.
-all_possible_moves([Stacks,S,TP,RJ1,RJ2],Player,PossibleMoves) :- possible_moves(Stacks,TP,Player,[1,2,3],PossibleMoves).
+all_possible_moves([Stacks,_,TP,_,_],Player,PossibleMoves) :- possible_moves(Stacks,TP,Player,[1,2,3],PossibleMoves).
 
 
 %%%% possible_moves(+Stacks_Of_The_Game,+Trader_Position,+Player_Who_Will_Make_The_Move,+List_Of_Jumps_To_make,?List_Of_Moves)
 %% possible_moves will get the list of the moves possible by applying all the jumps given in the fourth parameter. In that game the list should be [1,2,3].
-possible_moves(Stacks,TP,Player,[],[]) :- !.
+possible_moves(_,_,_,[],[]) :- !.
 possible_moves(Stacks,TP,Player,[H|T],ListMoves) :-
 		possible_moves(Stacks,TP,Player,T,SListMoves), 
 		get_possible_list(Stacks,TP,H,ListProd),
@@ -24,10 +24,10 @@ possible_moves(Stacks,TP,Player,[H|T],ListMoves) :-
 %%%% get_possible_list(+List_Of_Stacks_In_The_Game,+Trader_Position,+Number_Of_Jumps_To_Make,?List_Of_Product_The_Player_Can_Have_After_Moving)
 %% This predicate will compute the list of products available from the current trader position by applying Pos moves to the pawn.
 get_possible_list(Stacks,TP,Pos,ListProd) :-
-		get_indexes(Stacks,TP,Pos,[NTP,ISup,IInf]),
+		get_indexes(Stacks,TP,Pos,[_,ISup,IInf]),
 		nth0(ISup,Stacks,E1),
 		nth0(IInf,Stacks,E2),
-		[Prod1|T1] = E1, [Prod2|T2] = E2,
+		[Prod1|_] = E1, [Prod2|_] = E2,
 		ListProd = [Prod1,Prod2].
 
 
@@ -36,7 +36,7 @@ get_possible_list(Stacks,TP,Pos,ListProd) :-
 %% WARNING: We got a stack-overflow for Depth higher or equal to 6 when using it in standalone. It cannot go deeper than 5 in game configurations.
 best_move(State,D,Player,BestMove) :- 
 		all_possible_moves(State,Player,PossibleMoves), 
-		best_move_Loop(State,PossibleMoves,D,Player,Val,BestMove).
+		best_move_Loop(State,PossibleMoves,D,Player,_,BestMove).
 
 %%%% best_move_loop(+GameState,+List_Of_All_The_Moves_Possible,+Player_Who_Is_Making_The_Moves,?Value_Of_The_Move,?BestMove_Possible)
 %% This rule will loop over the list of all the possible moves (computed thanks to the all_possible_moves predicate) and choose the best move that maximise 
@@ -44,7 +44,7 @@ best_move(State,D,Player,BestMove) :-
 best_move_Loop(_,[],_,_,-999,_) :- !. 
 best_move_Loop(State,[H|T],D,Player,Val,BestMove) :-
 		play(State,H,NewState,_),
-		[Stacks,S,TP,RJ1,RJ2] = NewState,
+		[Stacks,_,_,_,_] = NewState,
 		length(Stacks,Le),
 		(Le > 2 -> min_Algo(NewState,D,-999,999,Player,CurrVal); evalState(NewState,Earnings),eval(Earnings,Player,CurrVal)),
 		best_move_Loop(State,T,D,Player,NVal,NBestMove),
@@ -52,8 +52,8 @@ best_move_Loop(State,[H|T],D,Player,Val,BestMove) :-
 
 %%%% test_best_move(+Value_Of_The_Current_Best_Move,+Value_Of_The_Newly_Computed_Move,?Max_Value_Of_The_Two_Moves,+Current_Move,?New_Move)
 %% This predicate compares the value of the current mximizing move and the one that was just computed. It returns the new max value and the new best move.
-test_best_move(CurrVal,NVal,CurrVal,H,NBestMove,H) :- CurrVal >= NVal, !.
-test_best_move(CurrVal,NVal,NVal,H,NBestMove,NBestMove) :- NVal > CurrVal.
+test_best_move(CurrVal,NVal,CurrVal,H,_,H) :- CurrVal >= NVal, !.
+test_best_move(CurrVal,NVal,NVal,_,NBestMove,NBestMove) :- NVal > CurrVal.
 
 
 %%%% min_Algo(+GameState,+Depth,+Alpha,+Beta,+Player_Who_Is_Playing,+Value_Of_The_Minimal_Move)
@@ -72,7 +72,7 @@ min_Algo([Stacks,S,TP,RJ1,RJ2],D,Alpha,Beta,Player,ReturnValue) :- D > 0, length
 min_Algo_Loop(State,[H|T],D,Alpha,Beta,Player,Val,ReturnValue) :- Alpha < Val,
 		play(State,H,NewState,_),
 		Dd is D - 1,
-		[Stacks,S,TP,RJ1,RJ2] = NewState,
+		[Stacks,_,_,_,_] = NewState,
 		length(Stacks,Le),
 		(Dd == 0-> evalState(NewState,Earnings),eval(Earnings,Player,ReturnValue);
 			(Le =< 2 ->evalState(NewState,Earnings),eval(Earnings,Player,ReturnValue);
@@ -103,7 +103,7 @@ max_Algo([Stacks,S,TP,RJ1,RJ2],D,Alpha,Beta,Player,ReturnValue) :- D > 0, length
 max_Algo_Loop(State,[H|T],D,Alpha,Beta,Player,Val,ReturnValue) :- Beta > Val,
 		play(State,H,NewState,_),
 		Dd is D - 1,
-		[Stacks,S,TP,RJ1,RJ2] = NewState,
+		[Stacks,_,_,_,_] = NewState,
 		length(Stacks,Le),
 		(Dd == 0-> evalState(NewState,Earnings),eval(Earnings,Player,ReturnValue);
 			(Le =< 2 -> evalState(NewState,Earnings),eval(Earnings,Player,ReturnValue);
@@ -133,10 +133,9 @@ opponent([_,_,_,[Opponent|_],[Player|_]],Player,Opponent).
 %%%% min(+A,+B,?Minimum_Between_A_And_B)
 %% This rule returns the minimum value of two numbers.
 min(A,B,B) :- A > B,!.
-min(A,B,A).
+min(A,_,A).
 
 %%%% max(+A,+B,?Maximum_Between_A_And_B)
 %% This rule returns the maximum value of two numbers.
 max(A,B,B) :- A < B,!.
-max(A,B,A).
-
+max(A,_,A).
