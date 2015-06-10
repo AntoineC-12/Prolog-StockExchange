@@ -1,6 +1,7 @@
 % This is the file containing the AI of the StockExchange Game
 % Author: Antoine Pouillaude.
-
+use_module(stock_exchange).
+:- include(list_library).
 
 %%%% all_possible_moves(+State_Of_The_Game,+Player_Who_Will_Make_The_Move,?Possible_Moves)
 %% The following predicate will get all the possible moves that the ai could make.
@@ -32,7 +33,7 @@ get_possible_list(Stacks,TP,Pos,ListProd) :-
 
 %%%% best_move(+GameState,+Depth_The_Search,+Player_Who_Is_Playing,?Best_Move)
 %% This predicate will use Minimax Alpha/Beta algorithm to search for the best solution possible to play. 
-%% WARNING: We got a stack-overflow for Depth higher or equal to 5 when using it in standalone. It cannot deeper than 2 in game configurations.
+%% WARNING: We got a stack-overflow for Depth higher or equal to 6 when using it in standalone. It cannot go deeper than 5 in game configurations.
 best_move(State,D,Player,BestMove) :- 
 		all_possible_moves(State,Player,PossibleMoves), 
 		best_move_Loop(State,PossibleMoves,D,Player,Val,BestMove).
@@ -43,7 +44,9 @@ best_move(State,D,Player,BestMove) :-
 best_move_Loop(_,[],_,_,-999,_) :- !. 
 best_move_Loop(State,[H|T],D,Player,Val,BestMove) :-
 		play(State,H,NewState,_),
-		min_Algo(NewState,D,-999,999,Player,CurrVal),
+		[Stacks,S,TP,RJ1,RJ2] = NewState,
+		length(Stacks,Le),
+		(Le > 2 -> min_Algo(NewState,D,-999,999,Player,CurrVal); evalState(NewState,Earnings),eval(Earnings,Player,CurrVal)),
 		best_move_Loop(State,T,D,Player,NVal,NBestMove),
 		test_best_move(CurrVal,NVal,Val,H,NBestMove,BestMove).
 
@@ -55,45 +58,65 @@ test_best_move(CurrVal,NVal,NVal,H,NBestMove,NBestMove) :- NVal > CurrVal.
 
 %%%% min_Algo(+GameState,+Depth,+Alpha,+Beta,+Player_Who_Is_Playing,+Value_Of_The_Minimal_Move)
 %% This rule is the Min part of the Minimax Alpha/Beta algorithm, it will compute the move that will minise the opponent's profit.
-min_Algo(State,0,_,_,Player,ReturnValue) :- !,evalState(State,Earnings),eval(Earnings,Player,ReturnValue).
-min_Algo([[],S,TP,RJ1,RJ2],D,_,_,Player,ReturnValue) :- D > 0, !,evalState([[],S,TP,RJ1,RJ2],Earnings),eval(Earnings,Player,ReturnValue).
-min_Algo([Stacks,S,TP,RJ1,RJ2],D,Alpha,Beta,Player,ReturnValue) :- D > 0, Stacks \= [],
+%min_Algo(State,0,_,_,Player,ReturnValue) :- !,evalState(State,Earnings),eval(Earnings,Player,ReturnValue). % I prefered to use the IF-THEN-ELSE condition to save on stack memory
+%min_Algo([Stacks,S,TP,RJ1,RJ2],D,_,_,Player,ReturnValue) :- D > 0, length(Stacks,Le), Le =< 2, !,evalState([Stacks,S,TP,RJ1,RJ2],Earnings),eval(Earnings,Player,ReturnValue). % I prefered to use the IF-THEN-ELSE condition to save on stack memory
+min_Algo([Stacks,S,TP,RJ1,RJ2],D,Alpha,Beta,Player,ReturnValue) :- D > 0, length(Stacks,Le), Le > 2,
 		opponent([Stacks,S,TP,RJ1,RJ2],Player,Opponent),
 		all_possible_moves([Stacks,S,TP,RJ1,RJ2],Opponent,PossibleMoves),
 		min_Algo_Loop([Stacks,S,TP,RJ1,RJ2],PossibleMoves,D,Alpha,Beta,Player,999,ReturnValue).
 
 %%%% min_Algo_Loop(+GameState,+The_List_Of_All_The_Moves_The_Opponent_Can_Make,+Depth,+Alpha,+Beta,+Player,-Value_Of_The_Current_Minimizing_Move,?Value_Of_The_Minimizing_Move)
 %% This predicate loops over the list of all the possible moves the opponent can make and return the value of the move that minize the opponent's profit.
-min_Algo_Loop(_,[],_,_,_,_,Val,Val) :- !.
-min_Algo_Loop(_,_,_,Alpha,_,_,Val,Val) :- Alpha >= Val, !.
+%min_Algo_Loop(_,[],_,_,_,_,Val,Val) :- !. % I prefered to use the IF-THEN-ELSE condition to save on stack memory
+%min_Algo_Loop(_,_,_,Alpha,_,_,Val,Val) :- Alpha >= Val, !. % I prefered to use the IF-THEN-ELSE condition to save on stack memory
 min_Algo_Loop(State,[H|T],D,Alpha,Beta,Player,Val,ReturnValue) :- Alpha < Val,
 		play(State,H,NewState,_),
-		min(Val,Beta,NBeta),
 		Dd is D - 1,
-		max_Algo(NewState,Dd,Alpha,Beta,Player,RValue),
-		min(Val,RValue,NVal),
-		min_Algo_Loop(State,T,D,Alpha,NBeta,Player,NVal,ReturnValue).
+		[Stacks,S,TP,RJ1,RJ2] = NewState,
+		length(Stacks,Le),
+		(Dd == 0-> evalState(NewState,Earnings),eval(Earnings,Player,ReturnValue);
+			(Le =< 2 ->evalState(NewState,Earnings),eval(Earnings,Player,ReturnValue);
+				max_Algo(NewState,Dd,Alpha,Beta,Player,RValue),
+				min(Val,RValue,NVal),
+				(Alpha >= NVal -> ReturnValue is NVal;
+					min(NVal,Beta,NBeta),
+					(T == [] -> ReturnValue is NVal;
+						min_Algo_Loop(State,T,D,Alpha,NBeta,Player,NVal,ReturnValue)
+					)
+				)
+			)
+		).
 
 
 %%%% max_Algo(+GameState,+Depth,+Alpha,+Beta,+Player_Who_Is_Playing,+Value_Of_The_Maximal_Move)
 %% This rule is the Min part of the Minimax Alpha/Beta algorithm, it will compute the move that will maximise the player's profit.
-max_Algo(State,0,_,_,Player,ReturnValue) :- !,evalState(State,Earnings),eval(Earnings,Player,ReturnValue).
-max_Algo([[],S,TP,RJ1,RJ2],D,_,_,Player,ReturnValue) :- D > 0, !, evalState([[],S,TP,RJ1,RJ2],Earnings),eval(Earnings,Player,ReturnValue).
-max_Algo([Stacks,S,TP,RJ1,RJ2],D,Alpha,Beta,Player,ReturnValue) :- D > 0, Stacks \= [],
+%max_Algo(State,0,_,_,Player,ReturnValue) :- !,evalState(State,Earnings),eval(Earnings,Player,ReturnValue). % I prefered to use the IF-THEN-ELSE condition to save on stack memory
+%max_Algo([Stacks,S,TP,RJ1,RJ2],D,_,_,Player,ReturnValue) :- D > 0, length(Stacks,Le), Le =< 2, !, evalState([Stacks,S,TP,RJ1,RJ2],Earnings),eval(Earnings,Player,ReturnValue). % I prefered to use the IF-THEN-ELSE condition to save on stack memory
+max_Algo([Stacks,S,TP,RJ1,RJ2],D,Alpha,Beta,Player,ReturnValue) :- D > 0, length(Stacks,Le), Le > 2,
 		all_possible_moves([Stacks,S,TP,RJ1,RJ2],Player,PossibleMoves), 
 		max_Algo_Loop([Stacks,S,TP,RJ1,RJ2],PossibleMoves,D,Alpha,Beta,Player,-999,ReturnValue).
 
 %%%% min_Algo_Loop(+GameState,+The_List_Of_All_The_Moves_The_Player_Can_Make,+Depth,+Alpha,+Beta,+Player,-Value_Of_The_Current_Maximizing_Move,?Value_Of_The_Maximizing_Move)
 %% This predicate loops over the list of all the possible moves the player can make and return the value of the move that maximize the player's profit.
-max_Algo_Loop(_,[],_,_,_,_,Val,Val) :- !.
-max_Algo_Loop(_,_,_,_,Beta,_,Val,Val) :- Val >= Beta, !.
+%max_Algo_Loop(_,[],_,_,_,_,Val,Val) :- !. % I prefered to use the IF-THEN-ELSE condition to save on stack memory
+%max_Algo_Loop(_,_,_,_,Beta,_,Val,Val) :- Val >= Beta, !.  % I prefered to use the IF-THEN-ELSE condition to save on stack memory
 max_Algo_Loop(State,[H|T],D,Alpha,Beta,Player,Val,ReturnValue) :- Beta > Val,
 		play(State,H,NewState,_),
-		max(Val,Alpha,NAlpha),
 		Dd is D - 1,
-		min_Algo(NewState,Dd,Alpha,Beta,Player,RValue),
-		max(Val,RValue,NVal),
-		max_Algo_Loop(State,T,D,NAlpha,Beta,Player,NVal,ReturnValue).
+		[Stacks,S,TP,RJ1,RJ2] = NewState,
+		length(Stacks,Le),
+		(Dd == 0-> evalState(NewState,Earnings),eval(Earnings,Player,ReturnValue);
+			(Le =< 2 -> evalState(NewState,Earnings),eval(Earnings,Player,ReturnValue);
+				min_Algo(NewState,Dd,Alpha,Beta,Player,RValue),
+				max(Val,RValue,NVal),
+				(NVal >= Beta -> ReturnValue is NVal;
+					max(NVal,Alpha,NAlpha),
+					(T == [] -> ReturnValue is NVal;
+						max_Algo_Loop(State,T,D,NAlpha,Beta,Player,NVal,ReturnValue)
+					)
+				)
+			)
+		).
 		
 %%%% eval(+Earnings_Of_The_Players,+Player_Who_Is_Playing,?Difference_Between_The_Two_Players_Profits)
 %% This predicate calculates the difference between the two players' profits. 

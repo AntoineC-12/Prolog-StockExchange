@@ -2,6 +2,9 @@
 % Author: Antoine Pouillaude.
 
 use_module(stock_exchange).
+:- include(game_ai).
+:- include(game_display).
+:- include(list_library).
 
 % A game state will define as State = [Marchandises, Bourse, PositionTrader, ReserveJoueur1,ReserveJoueur2].
 
@@ -129,9 +132,9 @@ eval_player_earning(Stock,[H|T],JEarning) :-
 
 
 
-ai_vs_ai([[],S,TP,RJ1,RJ2],_) :- !,display_game([[],S,TP,RJ1,RJ2]), nl, write('The Game is Over'), evalState([[],S,TP,RJ1,RJ2],Earnings),write(Earnings).
-ai_vs_ai([Stacks,S,TP,RJ1,RJ2],Player) :- Stacks \= [], State = [Stacks,S,TP,RJ1,RJ2], 
-		display_game(State),best_move(State,2,Player,BestMove),
+ai_vs_ai([Stacks,S,TP,RJ1,RJ2],_) :- length(Stacks,Le),Le=<2,!,display_game([Stacks,S,TP,RJ1,RJ2]), nl, write('The Game is Over'), evalState([[],S,TP,RJ1,RJ2],Earnings),write(Earnings).
+ai_vs_ai([Stacks,S,TP,RJ1,RJ2],Player) :- length(Stacks,Le),Le>2, State = [Stacks,S,TP,RJ1,RJ2], 
+		display_game(State),write([Stacks,S,TP,RJ1,RJ2]),nl,best_move(State,5,Player,BestMove),
 		play(State,BestMove,NewState,_),
 		opponent(State,Player,Opponent),
 		ai_vs_ai(NewState,Opponent).

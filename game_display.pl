@@ -2,6 +2,7 @@
 % Author: Antoine Pouillaude.
 
 use_module(stock_exchange).
+:- include(list_library).
 
 %% This file contains the rules to display the gaming board.
 % A game state will define as State = [Marchandises, Bourse, PositionTrader, ReserveJoueur1,ReserveJoueur2].
