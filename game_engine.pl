@@ -142,7 +142,7 @@ ai_vs_ai([Stacks,S,TP,RJ1,RJ2],_) :- length(Stacks,Le),Le=<2,!,
 		display_game([Stacks,S,TP,RJ1,RJ2]),nl,nl,tab(20),write('The Game is Over'),nl,
 		tab(20),evalState([[],S,TP,RJ1,RJ2],Earnings),display_earnings(Earnings),nl,nl.
 ai_vs_ai([Stacks,S,TP,RJ1,RJ2],Player) :- length(Stacks,Le),Le>2, State = [Stacks,S,TP,RJ1,RJ2], 
-		display_game(State),best_move(State,5,Player,BestMove),
+		display_game(State),best_move(State,4,Player,BestMove),
 		play(State,BestMove,NewState,_),
 		opponent(State,Player,Opponent),
 		ai_vs_ai(NewState,Opponent).

@@ -14,8 +14,8 @@ print_u(X) :- write(X).
 %%% display_stack(+List_Of_Stacks,+Position_Of_The_Trader)
 %% This predicate will display the stacks of merchandise. It adds an arrow in from of the stack on which the Trader is seating.
 display_stack([],_).
-display_stack([[H|_]|Tt],0) :- tab(1), write('-->'), tab(1), print_u(H), nl, !, display_stack(Tt,-1).
-display_stack([[H|_]|Tt],P) :- P \= 0, Psub is P - 1, tab(5), print_u(H), nl, display_stack(Tt,Psub).
+display_stack([[H|T]|Tt],0) :- tab(1), write('-->'), tab(1), print_u(H), length(T,Le), write(' (left: ['), write(Le), write(']) '), nl, !, display_stack(Tt,-1).
+display_stack([[H|T]|Tt],P) :- P \= 0, Psub is P - 1, tab(5), print_u(H), length(T,Le), write(' (left: ['), write(Le), write(']) '), nl, display_stack(Tt,Psub).
 
 %%%% get_objTemplate(+Name_Of_The_Template_To_Get,+List_Of_Templates,?Template_Associated_With_The_Name).
 %% This rule gets the template associated with the name given in argument. This predicate is similar to member_sec_order_e.

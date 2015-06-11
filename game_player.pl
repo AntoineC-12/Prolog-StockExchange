@@ -1,8 +1,11 @@
-% This is the file containing the engine of the StockExchange Game
+% This is the file containing the code to allow humans to play to the StockExchange Game
 % Author: Antoine Pouillaude.
 
 
-/* JEU JOUEUR CONTRE JOUEUR */
+%%%% player_interface(+GameState,+Player_Who_Will_Enter_Information_To_Play,+Mode)
+%%% Mode = 1 if this is a human_vs_ai game, Mode = 0 if this is a human_vs_human game. 
+%% The predicate will display a user interface in order to let the player choose their options. One can always type "q" to go back to the 
+%% main menu.
 player_interface(State,Player,Mode):-write('Now it s '),write(Player),write(' s turn : '),nl,
 		write('Number of jumps : '),read(J),nl,
 		(J == 3 -> Res is 3;
@@ -33,13 +36,18 @@ player_interface(State,Player,Mode):-write('Now it s '),write(Player),write(' s 
 			)
 		).
 
+%%%% human_vs_human(+GameState,+CurrentPlayer)
+%% This predicate will allow two human players to play against each other. It displays the scores if the game is over, otherwise it calls the
+%% player_interface rule to let the other player play.
 human_vs_human([Stacks,S,TP,RJ1,RJ2],_) :- length(Stacks,Le),Le=<2,!,
 		display_game([Stacks,S,TP,RJ1,RJ2]),nl,nl,tab(20),write('The Game is Over'),nl,
 		tab(20),evalState([[],S,TP,RJ1,RJ2],Earnings),display_earnings(Earnings),nl,nl.
 human_vs_human([Stacks,S,TP,RJ1,RJ2],Player) :- length(Stacks,Le),Le>2, State = [Stacks,S,TP,RJ1,RJ2], 
 		display_game(State),player_interface(State,Player,0).
 
-
+%%%% human_vs_ai(+GameState,+CurrentPlayer)
+%% This predicate allows a human player to play against an AI. It displays the scores if the game is over, otherwise it calls the
+%% player_interface if this the human's turn or just let the AI play the best move it can find.
 human_vs_ai([Stacks,S,TP,RJ1,RJ2],_) :- length(Stacks,Le),Le=<2,!,
 		display_game([Stacks,S,TP,RJ1,RJ2]),nl,nl,tab(20),write('The Game is Over'),nl,
 		tab(20),evalState([[],S,TP,RJ1,RJ2],Earnings),display_earnings(Earnings),nl,nl.
@@ -52,6 +60,8 @@ human_vs_ai([Stacks,S,TP,RJ1,[AI|T]],Player) :- length(Stacks,Le),Le>2,Player \=
 		display_game(State),player_interface(State,Player,1).
 
 
+%%%% binary_choice(+First_Option,+Second_Option,-Choice_Made_By_The_Player)
+%% This rule displays two options and let the player type their choice. It checks if what the player typed is correct and return the choice made.
 binary_choice(Option1,Option2,Res) :-
 		write('1. Option 1 : '),write(Option1),nl,
 		write('2. Option 2 : '),write(Option2),nl,
@@ -65,6 +75,8 @@ binary_choice(Option1,Option2,Res) :-
 			)
 		).
 
+%%%% get_the_opposite_option(+List_Of_The_Two_Choices,+Index_Of_The_Selected_Choice,-The_Opposite_Of_The_Choice_Made_By_The_User)
+%% This rule gets the choice that the player did not choose in a binary menu of choices.
 get_the_opposite_option([_,Prod2],0,Prod2).
 get_the_opposite_option([Prod1,_],1,Prod1).
 

@@ -1,4 +1,4 @@
-% This is the file containing the engine of the StockExchange Game
+% This is the main file of the game
 % Author: Antoine Pouillaude.
 
 use_module(stock_exchange).
