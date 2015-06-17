@@ -1,0 +1,13 @@
+\BOOKMARK [0][-]{chapter.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.1.1}{Mod\350le}{chapter.1}% 2
+\BOOKMARK [0][-]{chapter.2}{Principaux pr\351dicats}{}% 3
+\BOOKMARK [1][-]{section.2.1}{Gestion du plateau}{chapter.2}% 4
+\BOOKMARK [2][-]{subsection.2.1.1}{Affichage}{section.2.1}% 5
+\BOOKMARK [2][-]{subsection.2.1.2}{G\351n\351ration du plateau}{section.2.1}% 6
+\BOOKMARK [1][-]{section.2.2}{D\351roulement du jeu}{chapter.2}% 7
+\BOOKMARK [2][-]{subsection.2.2.1}{V\351rification de coup}{section.2.2}% 8
+\BOOKMARK [2][-]{subsection.2.2.2}{Jouer un coup}{section.2.2}% 9
+\BOOKMARK [1][-]{section.2.3}{Intelligence artificielle}{chapter.2}% 10
+\BOOKMARK [2][-]{subsection.2.3.1}{Trouver les coups possibles}{section.2.3}% 11
+\BOOKMARK [2][-]{subsection.2.3.2}{D\351terminer le meilleur coup}{section.2.3}% 12
+\BOOKMARK [0][-]{chapter.3}{Conclusion}{}% 13

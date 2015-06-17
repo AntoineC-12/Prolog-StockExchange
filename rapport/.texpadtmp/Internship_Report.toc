@@ -1,0 +1,19 @@
+\select@language {french}
+\contentsline {chapter}{\numberline {1}Introduction}{3}{chapter.1}
+\contentsline {section}{\numberline {1.1}Mod\IeC {\`e}le}{3}{section.1.1}
+\contentsline {paragraph}{Bourse}{3}{section*.2}
+\contentsline {paragraph}{Piles de marchandises.}{3}{section*.3}
+\contentsline {paragraph}{Trader}{3}{section*.4}
+\contentsline {paragraph}{R\IeC {\'e}serve}{4}{section*.5}
+\contentsline {paragraph}{Coup de jeu}{4}{section*.6}
+\contentsline {chapter}{\numberline {2}Principaux pr\IeC {\'e}dicats}{5}{chapter.2}
+\contentsline {section}{\numberline {2.1}Gestion du plateau}{5}{section.2.1}
+\contentsline {subsection}{\numberline {2.1.1}Affichage}{5}{subsection.2.1.1}
+\contentsline {subsection}{\numberline {2.1.2}G\IeC {\'e}n\IeC {\'e}ration du plateau}{6}{subsection.2.1.2}
+\contentsline {section}{\numberline {2.2}D\IeC {\'e}roulement du jeu}{6}{section.2.2}
+\contentsline {subsection}{\numberline {2.2.1}V\IeC {\'e}rification de coup}{6}{subsection.2.2.1}
+\contentsline {subsection}{\numberline {2.2.2}Jouer un coup}{7}{subsection.2.2.2}
+\contentsline {section}{\numberline {2.3}Intelligence artificielle}{8}{section.2.3}
+\contentsline {subsection}{\numberline {2.3.1}Trouver les coups possibles}{8}{subsection.2.3.1}
+\contentsline {subsection}{\numberline {2.3.2}D\IeC {\'e}terminer le meilleur coup}{9}{subsection.2.3.2}
+\contentsline {chapter}{\numberline {3}Conclusion}{10}{chapter.3}

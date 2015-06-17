@@ -23,7 +23,7 @@ stockexchange(X) :- nl,
 
 choose(1) :-!,write('Name of the first player : '), read(Player1), nl, 
 		write('Name of the second player : '),read(Player2), nl, 
-		write('Let s start a game between humans : '),write(Player1), write(' vs '), write(Player1),nl, 
+		write('Let s start a game between humans : '),write(Player1), write(' vs '), write(Player2),nl, 
 		choice(1,Player1,Player2),stockexchange(_).
 choose(2) :-!,write('Name of the first player : '), read(Player1), nl, (Player1 == ai1 -> Player2 = ai2; Player2 = ai1),
 		write('Let s start a game between '),write(Player1),write(' vs '),write(Player2),nl, 
