@@ -1,5 +1,5 @@
 % This is the file containing the AI of the StockExchange Game
-% Author: Antoine Pouillaude.
+% Author: Frédéric Rouffineau et Antoine Pouillaude.
 
 %:- include(list_library).
 

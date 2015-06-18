@@ -1,5 +1,5 @@
 % This is the file containing the code to allow humans to play to the StockExchange Game
-% Author: Antoine Pouillaude.
+% Author: Frédéric Rouffineau et Antoine Pouillaude.
 
 
 %%%% player_interface(+GameState,+Player_Who_Will_Enter_Information_To_Play,+Mode)
@@ -52,7 +52,7 @@ human_vs_ai([Stacks,S,TP,RJ1,RJ2],_) :- length(Stacks,Le),Le=<2,!,
 		display_game([Stacks,S,TP,RJ1,RJ2]),nl,nl,tab(20),write('The Game is Over'),nl,
 		tab(20),evalState([[],S,TP,RJ1,RJ2],Earnings),display_earnings(Earnings),nl,nl.
 human_vs_ai([Stacks,S,TP,RJ1,[Player|T]],Player) :- length(Stacks,Le),Le>2,!, State = [Stacks,S,TP,RJ1,[Player|T]], 
-		display_game(State),best_move(State,4,Player,BestMove),
+		display_game(State),best_move(State,3,Player,BestMove),
 		play(State,BestMove,NewState,_),
 		opponent(NewState,Player,Opponent),
 		human_vs_ai(NewState,Opponent).

@@ -1,5 +1,5 @@
 % This is the file containing the engine of the StockExchange Game
-% Author: Antoine Pouillaude.
+% Author: Frédéric Rouffineau et Antoine Pouillaude.
 
 use_module(stock_exchange).
 %:- include(game_ai).

@@ -278,14 +278,14 @@ Rue Roger Couttolenc\\
 
 \chapter{Introduction}
 
-Nous avons eu pour projet, dans le cadre de l'Unité de Valeur IA02 (Résolution de Problèmes et programmation logique), de coder le jeu Chicago Stock Exchange à l'aide du langage Prolog. Il s'agit d'un jeu de plateau pouvant se jouer à 2 joueurs ou plus durant lequel ils vont essayé de maximiser leur profit en vendant et en achetant des denrées alimentaires. 
+Nous avons eu pour projet, dans le cadre de l'Unité de Valeur IA02 (Résolution de Problèmes et programmation logique), de coder le jeu Chicago Stock Exchange à l'aide du langage Prolog. Il s'agit d'un jeu de plateau pouvant se jouer à 2 joueurs ou plus durant lequel ils vont essayer de maximiser leur profit en vendant et en achetant des denrées alimentaires. 
 Afin de simplifier l'implémentation du jeu sous Prolog, nous avons limité le nombre de joueurs à 2. Nous devions également créer une Intelligence Artificielle afin de pouvoir jouer contre l'ordinateur. 
 
-Lors d'un tour de jeu un joueur va déplacer un pion Trader sur des piles de denrées d'au moins 1 et d'au plus 3 piles. Il/elle va alors récolter les deux jetons situés sur le dessus des piles adjacentes du Trader, choisir d'en garder une et d'en jeter une. Jeter une denrée à pour effet de diminuer la valeur en bouse de cette-denière. Le joueur avec le stock de plus grande valeur gagne la partie.\\
+Lors d'un tour de jeu un joueur va déplacer un pion Trader sur des piles de denrées d'au moins 1 et d'au plus 3 piles. Il/elle va alors récolter les deux jetons situés sur le dessus des piles adjacentes du Trader, choisir d'en garder une et d'en jeter une. Jeter une denrée à pour effet de diminuer la valeur en bourse de cette denière. Le joueur avec le stock de plus grande valeur gagne la partie.\\
 
 
 \section{Modèle}
-\noindent Le jeu sera majoritairement modéliser avec une liste représentant l'état de jeu courant. Cette liste sera de la forme : 
+\noindent Le jeu sera majoritairement modélisé avec une liste représentant l'état de jeu courant. Cette liste sera de la forme : 
 \begin{lstlisting}[language=prolog]
 [Liste des piles de denrées, État de la bourse, Position du Trader, Réserve du joueur 1, Réserve du joueur 2]
 \end{lstlisting}
@@ -294,16 +294,16 @@ Les différentes listes qui composent l'état de jeu courant auront les formes i
 \begin{lstlisting}[language=prolog]
 [Etat de la marchandise 1, Etat de la marchandise 2, ..., Etat de la marchandise n]
 \end{lstlisting}
-L'état d'une marchandise est quant à lui une simple liste avec, comme premier élément, le nom de la marchandise en question et en seconde position la valeur en bourse de ladite denrée.
+L'état d'une marchandise est, quant à lui, une simple liste avec, comme premier élément, le nom de la marchandise en question et en seconde position la valeur en bourse de ladite denrée.
 \begin{lstlisting}[language=prolog]
 [Marchandise,Valeur en bourse]
 \end{lstlisting}
-\paragraph{Piles de marchandises.} Le jeu, dans son état initial est composée de 9 piles de 4 denrées différentes. Ces piles sont modélisées par des listes elle-mêmes inclues dans une grande liste contenant toutes les piles.
+\paragraph{Piles de marchandises.} Le jeu, dans son état initial est composé de 9 piles de 4 denrées différentes. Ces piles sont modélisées par des listes elle-mêmes inclues dans une grande liste contenant toutes les piles.
 \begin{lstlisting}[language=prolog]
 [[Pile1],[Denrée1,Denrée2,Denrée3,Denrée4],[Pile3],...,[PileN]]
 \end{lstlisting}
 \paragraph{Trader} La position du Trader sera donnée à l'aide d'un chiffre entre 0 et le nombre de piles contenues dans l'état de jeu courant. 
-\paragraph{Réserve}La réserve d'un joueur sera modélisé par une liste avec en tête de liste le nom du joueur en question suivi des denrées que ce joueur possède.
+\paragraph{Réserve}La réserve d'un joueur sera modélisée par une liste avec en tête le nom du joueur en question suivi des denrées que ce joueur possède.
 \begin{lstlisting}[language=prolog]
 [Nom du joueur, Denrée1,Denrée2,...,DenréeN]
 \end{lstlisting}
@@ -340,13 +340,13 @@ display_game(State) :-
 
 Dans la queue de cette règle on retrouve des appels aux prédicats :
 \begin{itemize}
-    \item \textit{generate\_{}board\_{}from\_{}stock} qui va, à partir d'un Template d'affichage générer une liste correspondant au plateau graphique à afficher.  
+    \item \textit{generate\_{}board\_{}from\_{}stock} qui va, à partir d'un Template d'affichage, générer une liste correspondant au plateau graphique à afficher.  
     \item \textit{display\_{}board} qui affiche le Template généré par la règle précédente.
-    \item \textit{display\_{}stacks} qui afficher le dessus de chaque piles de marchandises et le nombre de jetons restant dans ces piles.
+    \item \textit{display\_{}stacks} qui affiche le dessus de chaque pile de marchandises et le nombre de jetons restant dans ces piles.
     \item \textit{display\_{}players} qui affiche l'état des stocks des différents joueurs.
-    \item \textit{display\_{}earnings} qui va afficher le gain en USD des deux joueurs en fonction de leur stocks.
+    \item \textit{display\_{}earnings} qui va afficher le gain en USD des deux joueurs en fonction de leur stock.
 \end{itemize}
-Au final nous obtnons le rendu suivant : 
+Au final nous obtenons le rendu suivant : 
 \begin{figure}[H]
     \begin{center}
         \includegraphics[scale=0.5]{ScreenGamingBoard.jpg}
@@ -356,7 +356,7 @@ Au final nous obtnons le rendu suivant :
  \end{figure}
      
 \subsection{Génération du plateau}
-Au début de la partie le plateau doit être généré. Nous faisons appelle à la règle de construction \textit{starting\_{}state} :
+Au début de la partie le plateau doit être généré. Nous faisons appel à la règle de construction \textit{starting\_{}state} :
 \begin{lstlisting}[language=prolog]
 %%%% starting_state(?State_To_Be_Generated,+Player_1's_Name,+Player_1's_Name)
 %% This predicate generates the initial state of the game. 
@@ -366,9 +366,9 @@ starting_state(State,NameJ1,NameJ2) :-
 		random(0,8,TP),
 		State = [Stacks,Bourse,TP,[NameJ1],[NameJ2]].
 \end{lstlisting}
-Dans ce prédicat nous appelons la règle \textit{generating\_{}stacks}, qui va générer les piles de manières pseudo-aléatoire en faisant appel à la fonction built-in random\/{}3. Par la suite la position initiale du pion Trader est tirée de manière pseudo-aléatoire. 
+Dans ce prédicat nous appelons la règle \textit{generating\_{}stacks}, qui va générer les piles de manière pseudo-aléatoire en faisant appel à la fonction built-in random\/{}3. Par la suite la position initiale du pion Trader est tirée de manière pseudo-aléatoire. 
 
-Il est très intéressant de remarquer le fait que les tirages se font de manière pseudo-aléatoire, à chaque fois le premier état de jeu généré après l'ouverture de l'interpréteur gprolog est toujours le même. 
+Il est très intéressant de remarquer le fait que les tirages se font de manière pseudo-aléatoire. À chaque fois le premier état de jeu généré après l'ouverture de l'interpréteur gprolog est toujours le même. 
 %\begin{figure}[H]
 %    \begin{center}
 %        \includegraphics[scale=0.4]{ScreenStartingState.jpg}
@@ -378,7 +378,7 @@ Il est très intéressant de remarquer le fait que les tirages se font de maniè
 % \end{figure}
 \section{Déroulement du jeu}
 \subsection{Vérification de coup}
-Avant de jouer un coup il est important de savoir si celui-ci existe. En effet, si le joueur rentre une mauvaise combinaison de déplacement et de pièces à garder, il faut alors empêcher le joueur de jouer la combinaison. C'est pour cela que nous avons créer le prédicat \textit{is\_{}possible} qui va vérifier si le coup de jeu que l'utilisateur souhaite jouer est conforme à l'état actuel du plateau de jeu.
+Avant de jouer un coup il est important de savoir si celui-ci existe. En effet, si le joueur rentre une mauvaise combinaison de déplacement et de pièces à garder, il faut alors empêcher le joueur de jouer la combinaison. C'est pour cela que nous avons créé le prédicat \textit{is\_{}possible} qui va vérifier si le coup de jeu que l'utilisateur souhaite jouer est conforme à l'état actuel du plateau de jeu.
 \newpage
 
 \begin{lstlisting}[language=prolog]
@@ -400,7 +400,7 @@ test_comb(Keep,Sell,[Sell|_],[Keep|_],0) :- !.
 test_comb(_,_,_,_,1).
 \end{lstlisting}
 
-Ci-dessus nous avons défini deux prédicats pour tester les combinaisons. La règle \textit{test\_{}comb} sert à verifier si l'un des éléments donnés par l'utilisateur est bien sur l'une des piles adjacentes au Trader après déplacements. Le prédicat \textit{get\_{}indexes} va chercher l'index des trois piles concernées par le coup de jeu.
+Ci-dessus nous avons défini deux prédicats pour tester les combinaisons. La règle \textit{test\_{}comb} sert à verifier si l'un des éléments donnés par l'utilisateur est bien sur l'une des piles adjacentes au Trader après déplacement. Le prédicat \textit{get\_{}indexes} va chercher l'index des trois piles concernées par le coup de jeu.
 
 \subsection{Jouer un coup}
 Une fois que nous avons vérifié que le coup était viable, il faut maintenant le jouer et modifier l'état de jeu en conséquence. C'est pour cela que le prédicat \textit{play} a été créé. 
@@ -428,11 +428,11 @@ play_ret([Stacks,S,TP,RJ1,RJ2],[Player,Pos,Keep,Sell],NewState,0,0) :- !,
 play_ret([Stacks,S,TP,RJ1,RJ2],_,NewState,ExitStatus,ExitStatus) :- NewState =[Stacks,S,TP,RJ1,RJ2].
 \end{lstlisting}
 
-Il y a en fait deux prédicats différents avec le même nom. Le premier va récupérer l'entrée de l'utilisateur ou de l'Intelligence Artificielle et tester si le coup possible. La règle de test va retourner une valeur en fonction du résultat du test. Si cette valeur est 0 alors le coup viable et le second prédicat du même nom va alors modifier l'état du jeu en conséquence.
+Il y a en fait deux prédicats différents avec le même nom. Le premier va récupérer l'entrée de l'utilisateur ou de l'Intelligence Artificielle et tester si le coup est possible. La règle de test va retourner une valeur en fonction du résultat du test. Si cette valeur est 0 alors le coup est viable et le second prédicat du même nom va alors modifier l'état du jeu en conséquence.
 
 \section{Intelligence artificielle}
 
-Afin de pouvoir seul contre l'ordinateur nous avons créé une intelligence artificielle basée sur l'algorithme de recherche Min-Max avec élagage Alpha/Beta. Cet algorithme va être implémenté par deux prédicats importants.
+Afin de pouvoir jouer seul contre l'ordinateur nous avons créé une intelligence artificielle basée sur l'algorithme de recherche Min-Max avec élagage Alpha/Beta. Cet algorithme va être implémenté par deux prédicats importants.
 
 \subsection{Trouver les coups possibles}
 Il faut d'abord trouver tous les coups que l'ordinateur pourra jouer. C'est à cela que sert le prédicat \textit{all\_{}possible\_{}moves}.
@@ -459,14 +459,14 @@ possible_moves(Stacks,TP,Player,[H|T],ListMoves) :-
 
 La règle \textit{all\_{}possible\_{}moves} appelle le prédicat \textit{possible\_{}moves} pour tous les déplacements possibles. \textit{possible\_{}moves} va alors retourner toutes les combinaisons de produits gardés et de produits vendus possibles.
 
-Le prédicat \textit{all\_{}possible\_{}moves} va, à la fin, retourner la liste des coups possibles afin qu'ensuite l'Intelligence Artificelle puisse déterminer le meilleur coup possible.
+Le prédicat \textit{all\_{}possible\_{}moves} va, à la fin, retourner la liste des coups possibles afin, qu'ensuite, l'Intelligence Artificelle puisse déterminer le meilleur coup possible.
 
 \subsection{Déterminer le meilleur coup}
-C'est ici que l'algorithme Min-Max entre en scéne. Le Minimax va parcourir l'arbre des états simulés en jouant les coups possibles précédement trouvés par la règle précédente. Un problème que nous avons rencontré concernant cette méthode est que l'algorithme ne peut pas descendre plus profond que 2 durant une partie entre deux Intelligences Artificelles sinon le système retournera une exception de stack overflow.\\
+C'est ici que l'algorithme Min-Max entre en scéne. Le Minimax va parcourir l'arbre des états simulés en jouant les coups possibles précédement trouvés par la règle \textit{all\_{}possible\_{}moves}. Un problème que nous avons rencontré concernant cette méthode est que l'algorithme ne peut pas descendre à une profondeur supérieure à 2 durant une partie entre deux Intelligences Artificelles sinon le système retournera une exception de stack overflow.\\
 
-Nous avons utilisé l'élagage Alpha/Beta afin d'améliorer l'éfficacité de la recherche du meilleur coup possible. En ce qui concerne notre fonction d'évaluation des états, elle se base sur le gain potentiel des deux joueurs. Le gain du joueur en train de jouer sera compté positivement alors que le gain de l'adversaire sera compté négativement par la fonction d'évaluation. \\
+Nous avons utilisé l'élagage Alpha/Beta afin d'améliorer l'efficacité de la recherche du meilleur coup possible. En ce qui concerne notre fonction d'évaluation des états, elle se base sur le gain potentiel des deux joueurs. Le gain du joueur en train de jouer sera compté positivement alors que le gain de l'adversaire sera compté négativement par la fonction d'évaluation. \\
 
-Le nombre de prédicats servant à l'implémentation de Minimax étant trop grand ils ne seront pas affichés dans ce fichier. Vous pourrez les trouver dans le fichier \textit{game\_{}ai.pl} de notre projet.
+Le nombre de prédicats servant à l'implémentation de Minimax étant trop grand ils ne seront pas affichés dans ce document. Vous pourrez les trouver dans le fichier \textit{game\_{}ai.pl} de notre projet.
 
 
 \chapter{Conclusion}
@@ -476,10 +476,10 @@ Nous avons bien réussi à implémenter une version Prolog du jeu Chicago Exchan
    \item Partie IA vs Humain
    \item Partie IA vs IA
 \end{itemize}
-Prolog était un language trés adapté pour ce probléme. Cela nous a permis d'implémenter un jeu en "seulement" quelques lignes de codes qui, je suis sûr aurait eu besoin de plusieurs de plus de lignes si eût été codé dans un langage tel que C.\\
-Notre Intelligence Artificielle a été certainement la partie la plus dure à coder mais nous avons tout de même réussi à obtenir quelque chose de satisfaisant. Nous avons tout deux joué une partie contre cette Intelligence Artificielle et celle-ci nous a battue. Cependant nous pourrions émettre des objections concernant le choix de l'algorithme Minimax. En effet cet algorithme parcours un arbre composé d'états de jeu simulés par l'ordinateur, c'est-à-dire que l'Intelligence va connaitre à l'avance les produits situés en-dessous des jetons placés au-dessus des piles. C'est une connaissance que le joueur humain n'a pas et ne peut acquérir. En bref, l'ordinateur triche en regardant le contenu des piles.\\
+Prolog est un language assez bien adapté pour ce probléme. Cela nous a permis d'implémenter un jeu en "seulement" quelques lignes de codes qui, je suis sûr aurait eu besoin de plus de lignes si il eût été codé dans un langage tel que C.\\
+Notre Intelligence Artificielle a été certainement la partie la plus dure à coder mais nous avons tout de même réussi à obtenir quelque chose de satisfaisant. Nous avons tous deux joué une partie contre cette Intelligence Artificielle et celle-ci nous a battu. Cependant nous pourrions émettre des objections concernant le choix de l'algorithme Minimax. En effet cet algorithme parcourt un arbre composé d'états de jeu simulés par l'ordinateur, c'est-à-dire que l'Intelligence va connaitre à l'avance les produits situés en-dessous des jetons placés au-dessus des piles. C'est une connaissance que le joueur humain n'a pas et ne peut acquérir. En bref, l'ordinateur triche en regardant le contenu des piles.\\
 On pourrait alors modifier notre Intelligence afin de prendre en compte les pièces jouées et faire des statistiques quant aux pièces restant en jeu. L'ordinateur prendrait alors des décisions en fonction des probabilités de trouver une certaine marchandise en dessous des pièces manipulées.\\
-Une autre possibilité serait d'utiliser une heuristique afin de prévoir les états de jeu.
+Une autre possibilité serait d'utiliser une heuristique afin de prévoir les états de jeu suivants.
      
         %\nocite{*}
         %\addcontentsline{toc}{chapter}{Bibliography}

@@ -1,5 +1,5 @@
 % This is the main file of the game
-% Author: Antoine Pouillaude.
+% Author: Frédéric Rouffineau et Antoine Pouillaude.
 
 use_module(stock_exchange).
 :- include(game_engine).
